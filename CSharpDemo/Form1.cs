@@ -61,46 +61,78 @@ namespace CSharpDemo
                 }
             }
 
-            List<MvPath> paths = new List<MvPath>();
+            //List<MvPath> paths = new List<MvPath>();
+            //Dictionary<string, MvPath> dict = new Dictionary<string, MvPath>();
+
+            //for (int i = 0; i < len; i++)
+            //{
+            //    if (nodes[i].ConnectedNodesNum < 1)
+            //    {
+            //        continue;
+            //    }
+
+            //    nodes[i].Flag = true;
+
+            //    foreach (var obj in nodes[i].ConnectedNodes)
+            //    {
+            //        obj.Key.Flag = true;
+
+            //        if (GetPaths(nodes, dict, nodes[i], obj.Key, out MvPath res))
+            //        {
+            //            res.Parent = null;
+            //            paths.Add(res);
+
+            //            if (!dict.ContainsKey(res.Key))
+            //            {
+            //                dict.Add(res.Key, res);
+            //            }
+            //        }
+
+            //        obj.Key.Flag = false;
+            //    }
+
+            //    nodes[i].Flag = false;
+            //}
+
+            Dictionary<string, MvPath> dict = new Dictionary<string, MvPath>();
 
             for (int i = 0; i < len; i++)
             {
-                if (nodes[i].ConnectedNodesNum < 1)
+                // 第1个点至少有1个连接的端点
+                if (nodes[i].ConnectedNodesNum >= 1)
                 {
-                    continue;
-                }
-
-                nodes[i].Flag = true;
-
-                foreach (var obj in nodes[i].ConnectedNodes)
-                {
-                    obj.Key.Flag = true;
-
-                    if (GetPaths(nodes, nodes[i], obj.Key, out MvPath res))
+                    foreach (var obj in nodes[i].ConnectedNodes)
                     {
-                        res.Parent = null;
-                        paths.Add(res);
+                        // 第2个节点 至少有2个连接节点
+                        if (obj.Key.ConnectedNodesNum >= 2)
+                        {
+                            MvPath path = new MvPath(nodes[i], obj.Key);
+                            dict.Add(path.Key, path);
+                        }
                     }
-
-                    obj.Key.Flag = false;
                 }
+            }
 
-                nodes[i].Flag = false;
+            foreach (var path in dict)
+            {
+                path.Value.FirstNode.Flag = true;
+                path.Value.SecondNode.Flag = true;
+
+                path.Value.FirstNode.Flag = true;
+                path.Value.SecondNode.Flag = true;
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="nodes">全部节点数组</param>
-        /// <param name="nFirstIndex">第1个点索引</param>
-        /// <param name="nSecondIndex">第2个点索引</param>
-        /// <param name="paths"></param>
-        /// <returns></returns>
-        private bool GetPaths(MvNode[] nodes, MvNode mFirstNode, MvNode mSecondNode, out MvPath path)
+        private bool GetPaths(Dictionary<string, MvPath> dict, MvNode mFirstNode, MvNode mSecondNode, out MvPath path)
         {
             int len = mSecondNode.ConnectedNodesNum;
             path = new MvPath(mFirstNode, mSecondNode);
+
+            if (dict.ContainsKey(path.Key))
+            {
+                path = dict[path.Key];
+                return true;
+            }
 
             // 第2个点连接的节点数量若为1，则该点应该为第1个点；因此，返回
             if (len <= 1)
@@ -148,10 +180,15 @@ namespace CSharpDemo
                         obj.Key.Flag = true;
 
                         // 以第2个点为起点，第2个点的子节点为第2个点：获得新的路径
-                        if (GetPaths(nodes, mSecondNode, obj.Key, out MvPath res))
+                        if (GetPaths(dict, mSecondNode, obj.Key, out MvPath res))
                         {
                             res.Parent = path;
                             path.Paths.Add(res);
+
+                            if (!dict.ContainsKey(res.Key))
+                            {
+                                dict.Add(res.Key, res);
+                            }
                         }
 
                         obj.Key.Flag = false;
@@ -161,5 +198,90 @@ namespace CSharpDemo
 
             return path.NodeNum > 0 || path.PathNum > 0;
         }
+
+        /*
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodes">全部节点数组</param>
+        /// <param name="nFirstIndex">第1个点索引</param>
+        /// <param name="nSecondIndex">第2个点索引</param>
+        /// <param name="paths"></param>
+        /// <returns></returns>
+        private bool GetPaths(MvNode[] nodes, Dictionary<string, MvPath> dict, MvNode mFirstNode, MvNode mSecondNode, out MvPath path)
+        {
+            int len = mSecondNode.ConnectedNodesNum;
+            path = new MvPath(mFirstNode, mSecondNode);
+
+            if (dict.ContainsKey(path.Key))
+            {
+                path = dict[path.Key];
+                return true;
+            }
+
+            // 第2个点连接的节点数量若为1，则该点应该为第1个点；因此，返回
+            if (len <= 1)
+            {
+                return false;
+            }
+            else
+            {
+                // 第1个点到第2个点的角度
+                double angle12 = mFirstNode.ConnectedNodes[mSecondNode].Angle;
+                double angle23 = 0;
+
+                // 遍历第2个节点连接的全部节点，即可能是第3个点
+                foreach (var obj in mSecondNode.ConnectedNodes)
+                {
+                    // 该节点已经被占用；有可能是第2节点
+                    if (obj.Key.Flag)
+                    {
+                        continue;
+                    }
+
+                    angle23 = mSecondNode.ConnectedNodes[obj.Key].Angle;
+
+                    double intersectAngle = Math.Abs(angle12 - angle23);
+
+                    if (intersectAngle > 180)
+                    {
+                        intersectAngle = 360 - intersectAngle;
+                    }
+
+                    if (intersectAngle > 10)
+                    {
+                        continue;
+                    }
+
+                    // 该节点(第3节点)只有1个连接的节点，说明是第2节点；
+                    // 因此,这是符合条件的第3个点
+                    if (obj.Key.ConnectedNodesNum == 1)
+                    {
+                        // 这是第3个点                        
+                        path.Nodes.Add(obj.Key);
+                    }
+                    else
+                    {
+                        obj.Key.Flag = true;
+
+                        // 以第2个点为起点，第2个点的子节点为第2个点：获得新的路径
+                        if (GetPaths(nodes, dict, mSecondNode, obj.Key, out MvPath res))
+                        {
+                            res.Parent = path;
+                            path.Paths.Add(res);
+
+                            if (!dict.ContainsKey(res.Key))
+                            {
+                                dict.Add(res.Key, res);
+                            }
+                        }
+
+                        obj.Key.Flag = false;
+                    }
+                }
+            }
+
+            return path.NodeNum > 0 || path.PathNum > 0;
+        }*/
     }
 }
