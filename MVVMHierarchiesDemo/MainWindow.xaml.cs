@@ -12,9 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WpfDemo.ViewModel;
 
-namespace WpfDemo
+namespace MVVMHierarchiesDemo
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
@@ -24,14 +23,6 @@ namespace WpfDemo
         public MainWindow()
         {
             InitializeComponent();
-        }
-
-        private void StudentViewControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            //StudentViewModel model = new StudentViewModel();
-            //model.LoadStudents();
-
-            //StudentViewControl.DataContext = model;
         }
     }
 }

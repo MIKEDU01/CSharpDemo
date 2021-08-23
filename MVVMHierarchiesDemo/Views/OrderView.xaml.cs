@@ -12,26 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WpfDemo.ViewModel;
 
-namespace WpfDemo
+namespace MVVMHierarchiesDemo.Views
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    /// OrderView.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class OrderView : UserControl
     {
-        public MainWindow()
+        public OrderView()
         {
             InitializeComponent();
-        }
-
-        private void StudentViewControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            //StudentViewModel model = new StudentViewModel();
-            //model.LoadStudents();
-
-            //StudentViewControl.DataContext = model;
         }
     }
 }
