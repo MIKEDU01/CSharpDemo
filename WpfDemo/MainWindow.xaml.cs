@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Prism.Events;
+using Prism.Ioc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,9 +23,15 @@ namespace WpfDemo
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly IEventAggregator eventAggregator;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            eventAggregator = ContainerLocator.Container.Resolve<IEventAggregator>();
+
+            eventAggregator.GetEvent<MyPubSubEvent>().Subscribe(DoWork);
         }
 
         private void StudentViewControl_Loaded(object sender, RoutedEventArgs e)
@@ -32,6 +40,16 @@ namespace WpfDemo
             //model.LoadStudents();
 
             //StudentViewControl.DataContext = model;
+        }
+
+        private void DoWork(string info)
+        {
+            MessageBox.Show(info);
+        }
+
+        private void BTN_01_Click(object sender, RoutedEventArgs e)
+        {
+            eventAggregator.GetEvent<MyPubSubEvent>().Publish(DateTime.Now.ToString());
         }
     }
 }

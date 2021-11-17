@@ -4,9 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:WpfDemo.Views"
+        xmlns:prism="http://prismlibrary.com/"
+        prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <views:StudentView x:Name = "StudentViewControl" Loaded = "StudentViewControl_Loaded"/>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <views:StudentView Grid.Row="0" x:Name = "StudentViewControl"  Loaded = "StudentViewControl_Loaded"/>
+
+        <StackPanel Grid.Row="1">
+            <Button x:Name="BTN_01" Width="100" Content="测试" HorizontalAlignment="Left" Margin="5" Click="BTN_01_Click"></Button>
+        </StackPanel>
     </Grid>
 </Window>

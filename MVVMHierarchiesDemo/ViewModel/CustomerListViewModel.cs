@@ -8,6 +8,16 @@ namespace MVVMHierarchiesDemo.ViewModel
 {
     class CustomerListViewModel : BindableBase
     {
-        public string Text { get; set; } = "xxx";
+        private string text = string.Empty;
+
+        public string Text
+        {
+            get => text;
+            set
+            {
+                text = value;
+                OnPropertyChanged(nameof(Text));
+            }
+        }
     }
 }

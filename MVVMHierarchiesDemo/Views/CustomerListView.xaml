@@ -11,15 +11,15 @@
     <UserControl.DataContext>
         <viewModel:CustomerListViewModel></viewModel:CustomerListViewModel>
     </UserControl.DataContext>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        
+
         <TextBlock Grid.Row="0" Text = "Customer List View"/>
-        <TextBox Grid.Row="1" Text="{Binding Text, Mode=TwoWay}"></TextBox>
+        <TextBox Grid.Row="1" Text="{Binding Path=Text,Mode=TwoWay}"></TextBox>
     </Grid>
 
 </UserControl>
