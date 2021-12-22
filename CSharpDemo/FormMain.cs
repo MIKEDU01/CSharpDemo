@@ -3,13 +3,7 @@ using Syncfusion.Pdf;
 using Syncfusion.XlsIO;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CSharpDemo
@@ -82,7 +76,6 @@ namespace CSharpDemo
 
                 //Adding series and values
                 IChartShape chart = sheet.Charts.Add();
-
                 IChartSerie serie = chart.Series.Add(ExcelChartType.Doughnut);
 
                 //Enters the X and Y values directly
@@ -199,6 +192,109 @@ namespace CSharpDemo
                 //Save the PDF file
                 pdfDocument.Save("Chart3.pdf");
             }
+        }
+
+        private void BTN_05_Click(object sender, EventArgs e)
+        {
+            using (ExcelEngine excelEngine = new ExcelEngine())
+            {
+                IApplication application = excelEngine.Excel;
+                application.DefaultVersion = ExcelVersion.Excel2013;
+
+                IWorkbook workbook = application.Workbooks.Create(1);
+                IWorksheet sheet = workbook.Worksheets[0];
+
+                WriteData(sheet);
+
+                workbook.SaveAs("Chart5.xlsx");
+            }
+        }
+
+        public void WriteData(IWorksheet worksheet)
+        {
+            if (worksheet == null)
+            {
+                throw new ArgumentNullException(nameof(worksheet));
+            }
+
+            worksheet.Range[$"A1:G1"].ColumnWidth = 12;
+            worksheet.Range[$"A3:A9"].RowHeight = 25;            
+
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            dict.Add("轮胎类型", "C1");
+            dict.Add("轮胎直径(mm)", "630");
+            dict.Add("轮胎周长(mm)", "1979.203");
+            dict.Add("断面宽度(mm)", "205");
+            dict.Add("节距列数", "5");
+            dict.Add("优化前", "1600");
+            dict.Add("优化后", "630");
+
+            int rowIndex = 3;
+            foreach (var obj in dict)
+            {
+                worksheet.Range[$"A{rowIndex}"].Text = obj.Key;
+                worksheet.Range[$"A{rowIndex}"].CellStyle.HorizontalAlignment = ExcelHAlign.HAlignCenter;
+                worksheet.Range[$"A{rowIndex}"].CellStyle.VerticalAlignment = ExcelVAlign.VAlignCenter;
+                worksheet.Range[$"A{rowIndex}"].CellStyle.Font.FontName = "微软雅黑";
+                worksheet.Range[$"A{rowIndex}"].CellStyle.Font.Size = 12;
+
+                worksheet.Range[$"B{rowIndex}"].Text = obj.Key;
+                worksheet.Range[$"B{rowIndex}"].CellStyle.HorizontalAlignment = ExcelHAlign.HAlignCenter;
+                worksheet.Range[$"B{rowIndex}"].CellStyle.VerticalAlignment = ExcelVAlign.VAlignCenter;
+                worksheet.Range[$"B{rowIndex}"].CellStyle.Font.FontName = "微软雅黑";
+                worksheet.Range[$"B{rowIndex}"].CellStyle.Font.Size = 12;
+                rowIndex++;
+            }
+
+            // 雷达图
+            worksheet.Range[$"A17:G26"].Merge();
+            worksheet.Range[$"A17:G26"].RowHeight = 20;
+
+            //Adding series and values
+            IChartShape chart = worksheet.Charts.Add();
+
+            //chart.ChartTitle = "测试图表";
+            //chart.ChartTitleArea.Bold = true;
+            //chart.ChartTitleArea.RGBColor = Color.Blue;
+
+            // 图标在单元格上的位置
+            chart.LeftColumn = 1;
+            chart.RightColumn = 8;
+            chart.TopRow = 17;
+            chart.BottomRow = 30;
+            chart.ChartArea.Border.LinePattern = ExcelChartLinePattern.None;
+
+            // Legend水平放在底部
+            chart.Legend.Position = ExcelLegendPosition.Bottom;
+            chart.Legend.IsVerticalLegend = false;
+            chart.Legend.TextArea.FontName = "微软雅黑";
+            chart.Legend.TextArea.Size = 8;
+            chart.Legend.TextArea.Bold = true;
+
+            IChartSerie serie1 = chart.Series.Add(ExcelChartType.Radar);
+            IChartSerie serie2 = chart.Series.Add(ExcelChartType.Radar);
+
+            object[] labels = new object[] { "噪声", "饱和度", "刚度", "PRAT", "Groove Wander", "Snow Traction" };
+            object[] yValues1 = new object[] { 10, 20, 30, 40, 50, 60 };
+            object[] yValues2 = new object[] { 40, 50, 70, 10, 80, 90 };
+
+            serie1.EnteredDirectlyCategoryLabels = labels;            
+            serie1.EnteredDirectlyValues = yValues1;
+            serie1.Name = "设计目标";
+
+            serie2.EnteredDirectlyCategoryLabels = labels;
+            serie2.EnteredDirectlyValues = yValues2;
+            serie2.Name = "分析结果";
+
+            // 浦林成山（山东）轮胎有限公司
+            rowIndex = 32;
+            worksheet.Range[$"B{rowIndex}:F{rowIndex}"].Merge();
+            worksheet.Range[$"B{rowIndex}:F{rowIndex}"].Text = "浦林成山（山东）轮胎有限公司";
+            worksheet.Range[$"B{rowIndex}:F{rowIndex}"].CellStyle.HorizontalAlignment = ExcelHAlign.HAlignCenter;
+            worksheet.Range[$"B{rowIndex}:F{rowIndex}"].CellStyle.VerticalAlignment = ExcelVAlign.VAlignCenter;
+            worksheet.Range[$"B{rowIndex}:F{rowIndex}"].CellStyle.Font.FontName = "微软雅黑";
+            worksheet.Range[$"B{rowIndex}:F{rowIndex}"].CellStyle.Font.Size = 10;
+            worksheet.Range[$"B{rowIndex}:F{rowIndex}"].CellStyle.Font.Bold = true;
         }
     }
 }

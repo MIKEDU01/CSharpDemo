@@ -32,6 +32,7 @@
             this.BTN_02 = new System.Windows.Forms.Button();
             this.BTN_03 = new System.Windows.Forms.Button();
             this.BTN_04 = new System.Windows.Forms.Button();
+            this.BTN_05 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // BTN_01
@@ -74,10 +75,21 @@
             this.BTN_04.UseVisualStyleBackColor = true;
             this.BTN_04.Click += new System.EventHandler(this.BTN_04_Click);
             // 
+            // BTN_05
+            // 
+            this.BTN_05.Location = new System.Drawing.Point(492, 12);
+            this.BTN_05.Name = "BTN_05";
+            this.BTN_05.Size = new System.Drawing.Size(114, 71);
+            this.BTN_05.TabIndex = 4;
+            this.BTN_05.Text = "测试";
+            this.BTN_05.UseVisualStyleBackColor = true;
+            this.BTN_05.Click += new System.EventHandler(this.BTN_05_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.BTN_05);
             this.Controls.Add(this.BTN_04);
             this.Controls.Add(this.BTN_03);
             this.Controls.Add(this.BTN_02);
@@ -96,5 +108,6 @@
         private System.Windows.Forms.Button BTN_02;
         private System.Windows.Forms.Button BTN_03;
         private System.Windows.Forms.Button BTN_04;
+        private System.Windows.Forms.Button BTN_05;
     }
 }
